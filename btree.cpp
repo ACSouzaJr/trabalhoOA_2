@@ -1,14 +1,3 @@
-/*int search(NRR, key, found_nrr, found_pos){
-
-    if ( NRR == NULL )
-        return false
-    else
-    {
-        
-    }        
-
-}
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "commom.h"
@@ -16,7 +5,7 @@
 
 using namespace std;
 
-bool search(page *root, int value, int *pos)
+bool search_2(page *root, int value, int *pos)
 {
 
     page *node;
@@ -61,16 +50,27 @@ int binarySearch(page *node, int value)
         }
     }   
     /*  Nao encontrou retorna posicao para o filho*/
-    return fim;
+    return inicio;
 }
 
+bool search(page *root, int key, int *pos)
+{
+    int i;
+    for(i = 0;i < root->keyCount && key > root->keys[i];i++)
+        ;
+    *pos = i;
+    if ( *pos < root->keyCount && key == root->keys[*pos])
+        return true;
+    else
+        return false;        
+}
 
-//promo key: promoted key
-//promo r child: numero no criado 
+    //promo key: promoted key
+    //promo r child: numero no criado
 
-//p b rrn: nrr numro promovido
-//
-bool insert(page *root, int key, page *promo_nrr, int *promo_key)
+    //p b rrn: nrr numro promovido
+    //
+    bool insert(page *root, int key, page **promo_nrr, int *promo_key)
 {
 
     int pos;
@@ -111,8 +111,8 @@ bool insert(page *root, int key, page *promo_nrr, int *promo_key)
 
 void insertPage(page *node, int key)
 {
-    int i = 0;
-    for(int i = node->keyCount-1;key < node->keys[i-1] && i > 0;i--)
+    int i;
+    for(i = node->keyCount;key < node->keys[i-1] && i > 0;i--)
     {
         node->keys[i] = node->keys[i-1];
         node->children[i+1] = node->children[i];//nao precisa sempre vai ser folha
@@ -125,7 +125,7 @@ void insertPage(page *node, int key)
 
 //r_child = filho a direita;
 
-void split(page *oldNode, int key, page *promo_nrr, int *promo_key)
+void split(page *oldNode, int key, page **promo_nrr, int *promo_key)
 {
 
     int tempKeys[MAXKEYS+1];
@@ -172,5 +172,5 @@ void split(page *oldNode, int key, page *promo_nrr, int *promo_key)
     oldNode->keyCount = MINKEYS;
 
     *promo_key = tempKeys[MINKEYS]; //-> promoção chave do meio
-    promo_nrr = newNode;
+    *promo_nrr = newNode;
 }

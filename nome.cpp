@@ -30,12 +30,12 @@ void lerquivo(){
 }
 */
 
-void criaArvore(page *root)
+page* criaArvore(page *root)
 {
     string line;
     int key;
 
-    ifstream myfile("teste.txt");
+    ifstream myfile("teste2.txt");
     //se estiver vazia cria raiz
     if ( root == NULL )
     {
@@ -55,12 +55,14 @@ void criaArvore(page *root)
     while (getline(myfile, line))
     {
         key = atoi(line.c_str());
-        promoted = insert(root, key, promo_nrr, &promo_key);
+        promoted = insert(root, key, &promo_nrr, &promo_key);
         if ( promoted )
         {
             root = promote(promo_key, root, promo_nrr);
         }
     }
+    
+    return root;
 }
 
 page* promote(int promo_key, page *left, page *right){ /* key, root, promo_nrr*/

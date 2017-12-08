@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 /* Numero maximo de keys*/
-#define MAXKEYS 3
+#define MAXKEYS 4
 #define MINKEYS MAXKEYS/2
 
 /*  Declaracao da pagina(nó)*/
@@ -20,9 +20,9 @@ typedef struct BTPAGE page;
 /*  Funcoes*/
 bool search(page *root, int value, int *pos);
 int binarySearch(page *node, int value);
-bool insert(page *root, int key, page *promo_nrr, int *promo_key);
+bool insert(page *root, int key, page **promo_nrr, int *promo_key);
 void insertPage(page *node, int key);
-void split(page *oldNode, int key, page *promo_nrr, int *promo_key);
+void split(page *oldNode, int key, page **promo_nrr, int *promo_key);
 page *createPage();
-void criaArvore(page *root);
+page *criaArvore(page *root);
 page *promote(int promo_key, page *left, page *right);

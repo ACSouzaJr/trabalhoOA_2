@@ -6,7 +6,7 @@ ODIR=obj
 
 CXXFLAGS += -g -Wall -Wextra -pthread -Weffc++
 
-MAIN = main
+MAIN = run
 
 DEPS = commom.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
