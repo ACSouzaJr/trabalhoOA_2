@@ -76,8 +76,8 @@ node insereNoe(raiz *raiz, int valor ){
 
 }
 
-
-node removeNoe(raiz *B, int valor ){
+node removeNoe(raiz *B, int valor)
+{
     //remoção simples de uma chave
 
 
