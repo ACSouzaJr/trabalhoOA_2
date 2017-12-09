@@ -4,7 +4,7 @@
 #include <iostream>
 #define ORDEM 3
 
-void removeChave(btree_no *node, int pos)
+void removeChave(page *node, int pos)
 {
   int i = pos + 1;
   while (i <= node->keyCount)
@@ -18,10 +18,10 @@ void removeChave(btree_no *node, int pos)
 }
 
 /* funde os nós */
-void merge(btree_no *node, int pos)
+void merge(page *node, int pos)
 {
   int j = 1;
-  btree_no *filho1 = node->children[pos], *filho2 = node->children[pos - 1];
+  page *filho1 = node->children[pos], *filho2 = node->children[pos - 1];
 
   filho2->keyCount++;
   filho2->keys[filho2->keyCount] = node->keys[pos];
@@ -47,9 +47,9 @@ void merge(btree_no *node, int pos)
 }
 
 /* move a chave do pai para o filho da direita */
-void moveDireita(btree_no *node, int pos)
+void moveDireita(page *node, int pos)
 {
-  btree_no *x = node->children[pos];
+  page *x = node->children[pos];
   int j = x->keyCount;
 
   while (j > 0)
@@ -69,10 +69,10 @@ void moveDireita(btree_no *node, int pos)
 }
 
 /* move a chave do pai para o filho da esquerda */
-void moveEsquerda(btree_no *node, int pos)
+void moveEsquerda(page *node, int pos)
 {
   int j = 1;
-  btree_no *x = node->children[pos - 1];
+  page *x = node->children[pos - 1];
 
   x->keyCount++;
   x->keys[x->keyCount] = node->keys[pos];
@@ -93,7 +93,7 @@ void moveEsquerda(btree_no *node, int pos)
 }
 
 /* Ajusta as chaves dentro do nó */
-void ajustaNode(btree_no *node, int pos)
+void ajustaNode(page *node, int pos)
 {
   if (!pos)
   {
@@ -137,7 +137,7 @@ void ajustaNode(btree_no *node, int pos)
 }
 
 /* deleta uma chave do nó */
-int deletaChave(int key, btree_no *node)
+int deletaChave(int key, page *node)
 {
   int pos, flag = 0;
   if (node)
@@ -191,9 +191,9 @@ int deletaChave(int key, btree_no *node)
 }
 
 /* deleta nó da B-tree */
-void deletaNoeDaArvore(int key, btree_no *node)
+void deletaNoeDaArvore(int key, page *node)
 {
-  btree_no *tmp;
+  page *tmp;
   if (!deletaChave(key, node))
   {
     printf("A chave a ser deletada nao pertence a arvore\n");
