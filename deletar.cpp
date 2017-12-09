@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include "commom.h"
 #include <iostream>
-#define ORDEM 3
+
+using namespace std;
 
 void removeChave(page *node, int pos)
 {
@@ -136,6 +137,16 @@ void ajustaNode(page *node, int pos)
   }
 }
 
+void copiaSucessor(page *node, int pos)
+{
+  page *dummy;
+  dummy = node->children[pos];
+
+  for (; dummy->children[0] != NULL;)
+    dummy = dummy->children[0];
+  node->keys[pos] = dummy->keys[1];
+}
+
 /* deleta uma chave do nó */
 int deletaChave(int key, page *node)
 {
@@ -149,9 +160,9 @@ int deletaChave(int key, page *node)
     }
     else
     {
-      for (pos = node->keyCount; key < node->keys[pos] && pos > 1)
-        ; pos--)
+      for (pos = node->keyCount; key < node->keys[pos] && pos > 1; pos--){
         printf("Remoção ocorreu corretamente");
+      }
       if (key == node->keys[pos])
       {
         flag = 1;
