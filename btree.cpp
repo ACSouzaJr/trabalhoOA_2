@@ -5,27 +5,27 @@
 
 using namespace std;
 
-bool search_2(page *root, int value, int *pos)
+bool search_2(page *root, int value)
 {
 
     page *node;
-    //int pos;
+    int pos;
 
     node = root;
 
     while ( node != NULL )
     {
-        *pos = binarySearch(node, value);
-        if ( *pos < node->keyCount && node->keys[*pos] == value)
+        binarySearch(node, value, &pos);
+        if ( pos < node->keyCount && node->keys[pos] == value)
             return true;
         else
-            node = node->children[*pos];
+            node = node->children[pos];
     }
 
     return false;
 }
 
-int binarySearch(page *node, int value)
+bool binarySearch(page *node, int value, int *pos)
 {
 
     int meio, inicio, fim;
@@ -38,7 +38,8 @@ int binarySearch(page *node, int value)
         if ( node->keys[meio] == value )
         {
             /*  Encontrou retorna a chave*/
-            return meio;
+            *pos = meio;
+            return true;
         }
         else if( node->keys[meio] > value )
         {
@@ -50,9 +51,11 @@ int binarySearch(page *node, int value)
         }
     }   
     /*  Nao encontrou retorna posicao para o filho*/
-    return inicio;
+    *pos = inicio;
+    return false;
 }
 
+/*  busca sequencial*/
 bool search(page *root, int key, int *pos)
 {
     int i;
@@ -65,75 +68,72 @@ bool search(page *root, int key, int *pos)
         return false;        
 }
 
-    //promo key: promoted key
-    //promo r child: numero no criado
-
-    //p b rrn: nrr numro promovido
-    //
-    bool insert(page *root, int key, page **promo_nrr, int *promo_key)
+bool insert(page *root, int key, page **promo_nrr, int *promo_key)
 {
 
     int pos;
     bool found, promoted;
+    page *p_b_rrn;
+    int p_b_key;
 
     /*  Folha*/
     if ( root == NULL )
     {
         *promo_key = key;
-        promo_nrr = NULL;
+        *promo_nrr = NULL;
         return true;
 
     }
 
-    found = search(root, key, &pos);//tem que retornar pagina e posição
+    found = binarySearch(root, key, &pos); /*   Retorna a posicao relativa da chave*/
     if ( found )
     {
         std::cout << "Essa chave ja existe" << '\n';
-        return 0;
+        return false;
     }
 
-    promoted = insert(root->children[pos], key, promo_nrr, promo_key);
+    promoted = insert(root->children[pos], key, &p_b_rrn, &p_b_key);
     if ( !promoted )
     {
         return false;
     }
-    if ( root->keyCount < MAXKEYS ) //folha nao cheia
+    if ( root->keyCount < MAXKEYS ) /*  Pagina nao esta cheia*/
     {
-        insertPage(root, key);
+        insertPage(root, p_b_key, p_b_rrn);
         return false;
     }
     else
     {
-        split(root, key, promo_nrr, promo_key);
+        split(root, p_b_key, promo_nrr, promo_key, p_b_rrn);
         return true;
     }
 }
 
-void insertPage(page *node, int key)
+/*  Insere na pagina nao vazia*/
+void insertPage(page *node, int key, page* r_child)
 {
     int i;
     for(i = node->keyCount;key < node->keys[i-1] && i > 0;i--)
     {
         node->keys[i] = node->keys[i-1];
-        node->children[i+1] = node->children[i];//nao precisa sempre vai ser folha
+        node->children[i+1] = node->children[i];
     }
     node->keyCount++;
     node->keys[i] = key;
-    //node->children[i+1] = r_child;
+    node->children[i+1] = r_child;
 
 }
 
-//r_child = filho a direita;
 
-void split(page *oldNode, int key, page **promo_nrr, int *promo_key)
+void split(page *oldNode, int key, page **promo_nrr, int *promo_key, page *r_child)
 {
 
     int tempKeys[MAXKEYS+1];
     page *tempCh[MAXKEYS+2];
     int i;
 
-        /*  Move todas as chaves e filhos para um temporario*/
-        for (i = 0; i < MAXKEYS; i++)
+    /*  Move todas as chaves e filhos para um temporario*/
+    for (i = 0; i < MAXKEYS; i++)
     {
         tempKeys[i] = oldNode->keys[i];
         tempCh[i] = oldNode->children[i];
@@ -147,7 +147,7 @@ void split(page *oldNode, int key, page **promo_nrr, int *promo_key)
         tempCh[i+1] = tempCh[i];
     }
     tempKeys[i] = key;
-    //tempCh[i+1] = r_child;
+    tempCh[i+1] = r_child;
 
 
     /*  Cria nova pagina para split*/
@@ -165,8 +165,8 @@ void split(page *oldNode, int key, page **promo_nrr, int *promo_key)
         oldNode->keys[i + MINKEYS] = (int) NULL;
         oldNode->children[i + MINKEYS] = NULL;
     }
-    oldNode->children[i] = tempCh[i];
-    newNode->children[i] = tempCh[i + 1 + MINKEYS];
+    oldNode->children[MINKEYS] = tempCh[MINKEYS];
+    newNode->children[MINKEYS] = tempCh[i + 1 + MINKEYS];
 
     newNode->keyCount = MAXKEYS - MINKEYS;
     oldNode->keyCount = MINKEYS;

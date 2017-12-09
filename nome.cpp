@@ -35,7 +35,7 @@ page* criaArvore(page *root)
     string line;
     int key;
 
-    ifstream myfile("teste2.txt");
+    ifstream myfile("teste3.txt");
     //se estiver vazia cria raiz
     if ( root == NULL )
     {

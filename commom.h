@@ -19,10 +19,10 @@ typedef struct BTPAGE page;
 
 /*  Funcoes*/
 bool search(page *root, int value, int *pos);
-int binarySearch(page *node, int value);
+bool binarySearch(page *node, int value, int *pos);
 bool insert(page *root, int key, page **promo_nrr, int *promo_key);
-void insertPage(page *node, int key);
-void split(page *oldNode, int key, page **promo_nrr, int *promo_key);
+void insertPage(page *node, int key, page* r_child);
+void split(page *oldNode, int key, page **promo_nrr, int *promo_key, page *r_child);
 page *createPage();
 page *criaArvore(page *root);
 page *promote(int promo_key, page *left, page *right);
