@@ -97,7 +97,7 @@ void ajustaNode(page *node, int pos)
 {
   if (!pos)
   {
-    if (node->children[1]->keyCount > MIN)
+    if (node->children[1]->keyCount > MINKEYS)
     {
       moveEsquerda(node, 1);
     }
@@ -110,13 +110,13 @@ void ajustaNode(page *node, int pos)
   {
     if (node->keyCount != pos)
     {
-      if (node->children[pos - 1]->keyCount > MIN)
+      if (node->children[pos - 1]->keyCount > MINKEYS)
       {
         moveDireita(node, pos);
       }
       else
       {
-        if (node->children[pos + 1]->keyCount > MIN)
+        if (node->children[pos + 1]->keyCount > MINKEYS)
         {
           moveEsquerda(node, pos + 1);
         }
@@ -128,7 +128,7 @@ void ajustaNode(page *node, int pos)
     }
     else
     {
-      if (node->children[pos - 1]->keyCount > MIN)
+      if (node->children[pos - 1]->keyCount > MINKEYS)
         moveDireita(node, pos);
       else
         merge(node, pos);
@@ -183,7 +183,7 @@ int deletaChave(int key, page *node)
     }
     if (node->children[pos])
     {
-      if (node->children[pos]->keyCount < MIN)
+      if (node->children[pos]->keyCount < MINKEYS)
         ajustaNode(node, pos);
     }
   }
