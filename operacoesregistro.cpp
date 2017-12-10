@@ -34,13 +34,16 @@ void inserirRegistro(page **root){
     if ( !found )
     {
         /*  Insere no arquivo*/
-        ofstream myfile("FL_insurance_sample.csv", ios::app);
+        ofstream myfile(FILE_NAME, ios::app);
         myfile << "\n" << indice;
         myfile.close();
+
+        /*  Reecreve arvore*/ //mecanismo de escrita enquanto ocorre a inserção?
+        cout << "Arvore apos insercao" << endl;
+        traversal((*root));
     }
 
 
-    /*  Reecreve arvore*/ //mecanismo de escrita enquanto ocorre a inserção
 
 }
 
@@ -54,7 +57,26 @@ void removerRegistro(page **root){
 
 
     //realizar remoção.
+    bool found;
+    int nrr;
+    index key;
+    key.chavePrimaria = indice;
+    found = search_2((*root), key, &nrr);
+    if ( found )
+    {
+        //remoçao da arvore
+        //removeChave(root, key);
 
+        //remoção dos registros
 
+        //reescrita dos registros
 
+        //mostrar arvore
+        cout << "Arvore apos remocao" << endl;
+        traversal((*root));
+    }
+    else
+    {
+        cout << "Esse registro nao existe" << endl;
+    }
 }

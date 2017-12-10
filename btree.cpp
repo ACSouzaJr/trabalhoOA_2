@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool search_2(page *root, index key)
+bool search_2(page *root, index key, int *nrr)
 {
 
     page *node;
@@ -17,7 +17,10 @@ bool search_2(page *root, index key)
     {
         binarySearch(node, key, &pos);
         if ( pos < node->keyCount && node->keys[pos].chavePrimaria == key.chavePrimaria)
+        {
+            *nrr = node->keys[pos].nrr;
             return true;
+        }            
         else
             node = node->children[pos];
     }

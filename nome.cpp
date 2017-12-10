@@ -6,6 +6,7 @@
 
 using namespace std;
 int NRR = 0;
+const char  *FILE_NAME  = "teste3.txt";
 
 page* createPage()
 {
@@ -38,7 +39,7 @@ page* criaArvore(page *root)
     index key;
     int i = 1;
 
-    ifstream myfile("FL_insurance_sample.csv");
+    ifstream myfile(FILE_NAME);
     //getline(myfile, line); /*   retira o cabeçalho*/
 
     //se estiver vazia cria raiz

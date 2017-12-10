@@ -9,7 +9,11 @@ using namespace std;
 #define MAXKEYS 64
 #define MINKEYS MAXKEYS/2
 
+/*	variaveis globais
+*	NRR e o nome do arquivo
+*/
 extern int NRR;
+extern const char *FILE_NAME;
 
 struct indice
 {
@@ -56,6 +60,7 @@ typedef struct registro registro;
 
     /*  Funcoes*/
 bool search(page *root, index key, int *pos);
+bool search_2(page *root, index key, int *nrr);
 bool binarySearch(page *node, index key, int *pos);
 bool insert(page *root, index key, page **promo_nrr, index *promo_key, bool *found);
 void insertPage(page *node, index key, page *r_child);
