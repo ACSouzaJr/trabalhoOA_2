@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool search_2(page *root, int value)
+bool search_2(page *root, index key)
 {
 
     page *node;
@@ -15,8 +15,8 @@ bool search_2(page *root, int value)
 
     while ( node != NULL )
     {
-        binarySearch(node, value, &pos);
-        if ( pos < node->keyCount && node->keys[pos] == value)
+        binarySearch(node, key, &pos);
+        if ( pos < node->keyCount && node->keys[pos].chavePrimaria == key.chavePrimaria)
             return true;
         else
             node = node->children[pos];
@@ -25,7 +25,7 @@ bool search_2(page *root, int value)
     return false;
 }
 
-bool binarySearch(page *node, int value, int *pos)
+bool binarySearch(page *node, index key, int *pos)
 {
 
     int meio, inicio, fim;
@@ -35,13 +35,13 @@ bool binarySearch(page *node, int value, int *pos)
     while ( inicio <= fim )
     {
         meio = (inicio + fim) / 2;
-        if ( node->keys[meio] == value )
+        if ( node->keys[meio].chavePrimaria == key.chavePrimaria )
         {
             /*  Encontrou retorna a chave*/
             *pos = meio;
             return true;
         }
-        else if( node->keys[meio] > value )
+        else if( node->keys[meio].chavePrimaria > key.chavePrimaria )
         {
             fim = meio - 1;
         }
@@ -56,25 +56,28 @@ bool binarySearch(page *node, int value, int *pos)
 }
 
 /*  busca sequencial*/
-bool search(page *root, int key, int *pos)
+bool search(page *root, index key, int *pos)
 {
     int i;
-    for(i = 0;i < root->keyCount && key > root->keys[i];i++)
+    for(i = 0;i < root->keyCount && key.chavePrimaria > root->keys[i].chavePrimaria;i++)
         ;
     *pos = i;
-    if ( *pos < root->keyCount && key == root->keys[*pos])
+    if ( *pos < root->keyCount && key.chavePrimaria == root->keys[*pos].chavePrimaria)
         return true;
     else
         return false;        
 }
 
-bool insert(page *root, int key, page **promo_nrr, int *promo_key)
+/*  Recebe: pagina, chave a ser adicionada
+*   Retorna: chave a ser promovida, seus filhos e flag se a chave foi encontrada.
+*/
+bool insert(page *root, index key, page **promo_nrr, index *promo_key, bool *found)
 {
 
     int pos;
-    bool found, promoted;
+    bool promoted;
     page *p_b_rrn;
-    int p_b_key;
+    index p_b_key;
 
     /*  Folha*/
     if ( root == NULL )
@@ -85,14 +88,14 @@ bool insert(page *root, int key, page **promo_nrr, int *promo_key)
 
     }
 
-    found = binarySearch(root, key, &pos); /*   Retorna a posicao relativa da chave*/
-    if ( found )
+    (*found) = binarySearch(root, key, &pos); /*   Retorna a posicao relativa da chave*/
+    if ( (*found) )
     {
         std::cout << "Essa chave ja existe" << '\n';
         return false;
     }
 
-    promoted = insert(root->children[pos], key, &p_b_rrn, &p_b_key);
+    promoted = insert(root->children[pos], key, &p_b_rrn, &p_b_key, found);
     if ( !promoted )
     {
         return false;
@@ -110,10 +113,10 @@ bool insert(page *root, int key, page **promo_nrr, int *promo_key)
 }
 
 /*  Insere na pagina nao vazia*/
-void insertPage(page *node, int key, page* r_child)
+void insertPage(page *node, index key, page *r_child)
 {
     int i;
-    for(i = node->keyCount;key < node->keys[i-1] && i > 0;i--)
+    for(i = node->keyCount;key.chavePrimaria < node->keys[i-1].chavePrimaria && i > 0;i--)
     {
         node->keys[i] = node->keys[i-1];
         node->children[i+1] = node->children[i];
@@ -124,11 +127,10 @@ void insertPage(page *node, int key, page* r_child)
 
 }
 
-
-void split(page *oldNode, int key, page **promo_nrr, int *promo_key, page *r_child)
+void split(page *oldNode, index key, page **promo_nrr, index *promo_key, page *r_child)
 {
 
-    int tempKeys[MAXKEYS+1];
+    index tempKeys[MAXKEYS + 1];
     page *tempCh[MAXKEYS+2];
     int i;
 
@@ -141,7 +143,7 @@ void split(page *oldNode, int key, page **promo_nrr, int *promo_key, page *r_chi
     tempCh[i] = oldNode->children[i];
 
     /*  Encontra lugar para chave que vai ser inserida*/
-    for(i = MAXKEYS;key < tempKeys[i-1] && i > 0 ;i--)
+    for(i = MAXKEYS;key.chavePrimaria < tempKeys[i-1].chavePrimaria && i > 0 ;i--)
     {
         tempKeys[i] = tempKeys[i-1];
         tempCh[i+1] = tempCh[i];
@@ -154,7 +156,7 @@ void split(page *oldNode, int key, page **promo_nrr, int *promo_key, page *r_chi
     page *newNode = createPage();
 
     /*  Movimenta chaves, distribuição uniforme */
-    for (int i = 0; i < MINKEYS; i++)
+    for (i = 0; i < MINKEYS; i++)
     {
         oldNode->keys[i] = tempKeys[i];
         oldNode->children[i] = tempCh[i];
@@ -162,7 +164,8 @@ void split(page *oldNode, int key, page **promo_nrr, int *promo_key, page *r_chi
         newNode->children[i] = tempCh[i + 1 + MINKEYS];
 
         /*  Marca segunda metado do vetor como vazio*/
-        oldNode->keys[i + MINKEYS] = (int) NULL;
+        oldNode->keys[i + MINKEYS].chavePrimaria = (int) NULL;
+        oldNode->keys[i + MINKEYS].nrr = (int) NULL;
         oldNode->children[i + MINKEYS] = NULL;
     }
     oldNode->children[MINKEYS] = tempCh[MINKEYS];

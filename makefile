@@ -11,7 +11,7 @@ MAIN = run
 DEPS = commom.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = btree.o main.o nome.o
+_OBJ = btree.o main.o nome.o operacoesregistro.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 all: run
@@ -22,3 +22,7 @@ $(ODIR)/%.o: %.cpp $(DEPS)
 
 run: $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(MAIN) $^ $(CFLAGS)
+
+clean:
+	--rm ./obj/*.o
+	--rm run	

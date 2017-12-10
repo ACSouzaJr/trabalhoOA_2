@@ -5,17 +5,19 @@
 #include <fstream>
 
 using namespace std;
+int NRR = 0;
 
-page* createPage(){
+page* createPage()
+{
+    page *node = new page;
 
-    page *node = (page *) malloc(sizeof(page));
-
-    for(int i = 0;i <= MAXKEYS;i++)
+    for(int i = 0;i < MAXKEYS;i++)
     {
-        //node->keys[i] = (int) NULL;
+        node->keys[i].chavePrimaria = (int) NULL;
+        node->keys[i].nrr = (int) NULL;
         node->children[i] = NULL;
     }
-    //node->children[MAXKEYS] = NULL;
+    node->children[MAXKEYS] = NULL;
 
     return node;
 }
@@ -33,9 +35,12 @@ void lerquivo(){
 page* criaArvore(page *root)
 {
     string line;
-    int key;
+    index key;
+    int i = 1;
 
-    ifstream myfile("teste3.txt");
+    ifstream myfile("FL_insurance_sample.csv");
+    //getline(myfile, line); /*   retira o cabeçalho*/
+
     //se estiver vazia cria raiz
     if ( root == NULL )
     {
@@ -43,30 +48,36 @@ page* criaArvore(page *root)
         root->keyCount++;
         //ler arquivo
         getline(myfile, line);
-        key = atoi(line.c_str());
+        line = line.substr(0, 6);
+        key.chavePrimaria = atoi(line.c_str());
+        key.nrr = 0;
         root->keys[0] = key;
     }
     
-    bool promoted;
-    int promo_key;
-    page *promo_nrr;
+    bool promoted, found;
+    index promo_key;
+    page *child;
 
     /*  Preenche arvore*/
     while (getline(myfile, line))
     {
-        key = atoi(line.c_str());
-        promoted = insert(root, key, &promo_nrr, &promo_key);
+        line = line.substr(0, 6);
+        key.chavePrimaria = atoi(line.c_str());
+        key.nrr = i;
+        promoted = insert(root, key, &child, &promo_key, &found);
         if ( promoted )
         {
-            root = promote(promo_key, root, promo_nrr);
+            root = promote(promo_key, root, child);
         }
+        i++;
     }
-    
+    NRR = i;
+
     return root;
 }
 
-page* promote(int promo_key, page *left, page *right){ /* key, root, promo_nrr*/
-
+page* promote(index promo_key, page *left, page *right) /* key, root, promo_nrr*/
+{ 
     page *node = createPage();
 
     node->keys[0] = promo_key;
@@ -75,4 +86,19 @@ page* promote(int promo_key, page *left, page *right){ /* key, root, promo_nrr*/
     node->keyCount = 1;
 
     return node;
+}
+
+
+void traversal(page *node)
+{
+    int i;
+    if (node)
+    {
+        for (i = 0; i < node->keyCount; i++)
+        {
+            traversal(node->children[i]);
+            cout << node->keys[i].chavePrimaria << ' ';
+        }
+        traversal(node->children[i]);
+    }
 }
