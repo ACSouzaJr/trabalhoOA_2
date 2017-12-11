@@ -1,11 +1,14 @@
 #include <stdio.h>
-#include <iostream>
 #include <stdlib.h>
+#include <fstream>
+#include <iostream>
+#include <stack>
 #include "commom.h"
 
 using namespace std;
 
-void inserirRegistro(page **root);
+void inserirRegistro(page **root, stack<int> &PED);
+void removerRegistro(page **root, stack<int> &PED);
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +19,16 @@ int main(int argc, char *argv[])
 
     traversal(root);
     cout << endl;
+    /*  Escreve no arquivo*/
+    ofstream myfile("indicelista.bt", ios::trunc);
+    displayNode(root, myfile);
+    myfile.close();
 
+    /*  Mostra arvore*/
+    //ArvoreB();
+    //cout << endl;
+
+    stack<int> PED;
     do
     {
         /*  Menu*/
@@ -31,10 +43,11 @@ int main(int argc, char *argv[])
         switch (opcao)
         {
         case '1':
-            inserirRegistro(&root);
+            inserirRegistro(&root, PED);
             break;
         case '2':
-            //removerRegistro();
+            removerRegistro(&root, PED);
+            cout << PED.top();
             break;
         case '3':
             //atualizarRegistro();

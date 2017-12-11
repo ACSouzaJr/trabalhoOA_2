@@ -1,26 +1,49 @@
 #include <iostream>
 #include <fstream>
 #include "commom.h"
+#include <stack>
 
 using namespace std;
 
 
-void inserirRegistro(page **root){
+void inserirRegistro(page **root, stack<int> &PED)
+{
 
-    int indice;
+    int entrada;
+    registro data;
 
     cout << "Insira o indice do novo Registro:" << endl;
-    cin >> indice;
-    
+    cin >> entrada;
+    /*  
+        cin >> data.policyID;
+        cin >> data.statecode;
+        cin >> data.county;
+        cin >> data.eq_site_limit;
+        cin >> data.hu_site_limit;
+        cin >> data.fl_site_limit;
+        cin >> data.fr_site_limit;
+        cin >> data.tiv_2011;
+        cin >> data.tiv_2012;
+        cin >> data.eq_site_deductible;
+        cin >> data.hu_site_deductible;
+        cin >> data.fl_site_deductible;
+        cin >> data.fr_site_deductible;
+        cin >> data.point_latitude;
+        cin >> data.point_longitude;
+        cin >> data.line;
+        cin >> data.construction;
+        cin >> data.point_granularity;
+
+    */
 
     /*  Inserção arvore*/
-    index key;
-    index promo_key;
+    indice key;
+    indice promo_key;
     page *promo_nrr;
     bool promoted, found;
 
-    /*  Monta o indice*/
-    key.chavePrimaria = indice;
+    /*  Monta a chave*/
+    key.chavePrimaria = entrada;
     key.nrr = NRR;
     NRR++;
 
@@ -34,13 +57,30 @@ void inserirRegistro(page **root){
     if ( !found )
     {
         /*  Insere no arquivo*/
-        ofstream myfile(FILE_NAME, ios::app);
-        myfile << "\n" << indice;
-        myfile.close();
+        fstream file(FILE_NAME);
+        if ( PED.empty())
+        {
+            file.seekg(0, file.end);
+            file << "\n" << entrada;
+        }
+        else
+        {
+            gotoLine(file, PED.top());
+            file << entrada;
+            cin.get();
+        }
+        PED.pop();
+        file.close();
 
-        /*  Reecreve arvore*/ //mecanismo de escrita enquanto ocorre a inserção?
+        /*  mostra arvore nova*/ 
         cout << "Arvore apos insercao" << endl;
         traversal((*root));
+        cout << endl;
+
+        /*  Reecreve arvore*/
+        ofstream in("indicelista.bt", ios::trunc);
+        displayNode((*root), in);
+        in.close();
     }
 
 
@@ -48,19 +88,19 @@ void inserirRegistro(page **root){
 }
 
 
-void removerRegistro(page **root){
-
-    int indice;
+void removerRegistro(page **root, stack<int> &PED)
+{
+    int entrada;
 
     cout << "Insira o indice do Registro para ser removido:" << endl;
-    cin >> indice;
+    cin >> entrada;
 
 
     //realizar remoção.
     bool found;
     int nrr;
-    index key;
-    key.chavePrimaria = indice;
+    indice key;
+    key.chavePrimaria = entrada;
     found = search_2((*root), key, &nrr);
     if ( found )
     {
@@ -68,12 +108,25 @@ void removerRegistro(page **root){
         //removeChave(root, key);
 
         //remoção dos registros
+        fstream myfile(FILE_NAME);
+        
+        //vai ate a linha e insere um simbolo de delecao
+        gotoLine(myfile, nrr);
+        myfile << '*';
+        cin.get();
+        myfile.close();
+        //insere posicao vazia na pilha
+        PED.push(nrr);
 
-        //reescrita dos registros
+        //reescrita dos indices
+        ofstream in("indicelista.bt", ios::trunc);
+        displayNode((*root), in);
+        in.close();
 
         //mostrar arvore
         cout << "Arvore apos remocao" << endl;
         traversal((*root));
+        cout << endl;
     }
     else
     {

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool search_2(page *root, index key, int *nrr)
+bool search_2(page *root, indice key, int *nrr)
 {
 
     page *node;
@@ -28,7 +28,7 @@ bool search_2(page *root, index key, int *nrr)
     return false;
 }
 
-bool binarySearch(page *node, index key, int *pos)
+bool binarySearch(page *node, indice key, int *pos)
 {
 
     int meio, inicio, fim;
@@ -59,7 +59,7 @@ bool binarySearch(page *node, index key, int *pos)
 }
 
 /*  busca sequencial*/
-bool search(page *root, index key, int *pos)
+bool search(page *root, indice key, int *pos)
 {
     int i;
     for(i = 0;i < root->keyCount && key.chavePrimaria > root->keys[i].chavePrimaria;i++)
@@ -74,13 +74,13 @@ bool search(page *root, index key, int *pos)
 /*  Recebe: pagina, chave a ser adicionada
 *   Retorna: chave a ser promovida, seus filhos e flag se a chave foi encontrada.
 */
-bool insert(page *root, index key, page **promo_nrr, index *promo_key, bool *found)
+bool insert(page *root, indice key, page **promo_nrr, indice *promo_key, bool *found)
 {
 
     int pos;
     bool promoted;
     page *p_b_rrn;
-    index p_b_key;
+    indice p_b_key;
 
     /*  Folha*/
     if ( root == NULL )
@@ -110,13 +110,13 @@ bool insert(page *root, index key, page **promo_nrr, index *promo_key, bool *fou
     }
     else
     {
-        split(root, p_b_key, promo_nrr, promo_key, p_b_rrn);
+        splitNode(root, p_b_key, promo_nrr, promo_key, p_b_rrn);
         return true;
     }
 }
 
 /*  Insere na pagina nao vazia*/
-void insertPage(page *node, index key, page *r_child)
+void insertPage(page *node, indice key, page *r_child)
 {
     int i;
     for(i = node->keyCount;key.chavePrimaria < node->keys[i-1].chavePrimaria && i > 0;i--)
@@ -130,10 +130,10 @@ void insertPage(page *node, index key, page *r_child)
 
 }
 
-void split(page *oldNode, index key, page **promo_nrr, index *promo_key, page *r_child)
+void splitNode(page *oldNode, indice key, page **promo_nrr, indice *promo_key, page *r_child)
 {
 
-    index tempKeys[MAXKEYS + 1];
+    indice tempKeys[MAXKEYS + 1];
     page *tempCh[MAXKEYS+2];
     int i;
 

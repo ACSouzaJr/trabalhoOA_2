@@ -6,7 +6,7 @@
 using namespace std;
 
 /* Numero maximo de keys*/
-#define MAXKEYS 64
+#define MAXKEYS 4
 #define MINKEYS MAXKEYS/2
 
 /*	variaveis globais
@@ -14,27 +14,29 @@ using namespace std;
 */
 extern int NRR;
 extern const char *FILE_NAME;
+extern int PAGE;
 
-struct indice
+struct ind
 {
     int chavePrimaria;
     int nrr;
 
 };
 
-typedef struct indice index;
+typedef struct ind indice;
 
 /*  Declaracao da pagina(nó)*/
 struct BTPAGE
 {
     int keyCount;   /* Numero de chaves*/
-    index keys[MAXKEYS];   /*  Chaves*/
+    indice keys[MAXKEYS];   /*  Chaves*/
     struct BTPAGE *children[MAXKEYS+1];    /*  NRR dos filhos*/
+	int page;
 };
 
 typedef struct BTPAGE page;
 
-struct registro
+struct regist
 {
     string policyID;
     string statecode;
@@ -56,16 +58,19 @@ struct registro
 	string point_granularity;
 };
 
-typedef struct registro registro;
+typedef struct regist registro;
 
     /*  Funcoes*/
-bool search(page *root, index key, int *pos);
-bool search_2(page *root, index key, int *nrr);
-bool binarySearch(page *node, index key, int *pos);
-bool insert(page *root, index key, page **promo_nrr, index *promo_key, bool *found);
-void insertPage(page *node, index key, page *r_child);
-void split(page *oldNode, index key, page **promo_nrr, index *promo_key, page *r_child);
+bool search(page *root, indice key, int *pos);
+bool search_2(page *root, indice key, int *nrr);
+bool binarySearch(page *node, indice key, int *pos);
+bool insert(page *root, indice key, page **promo_nrr, indice *promo_key, bool *found);
+void insertPage(page *node, indice key, page *r_child);
+void splitNode(page *oldNode, indice key, page **promo_nrr, indice *promo_key, page *r_child);
 page *createPage();
 page *criaArvore(page *root);
-page *promote(index promo_key, page *left, page *right);
+page *promote(indice promo_key, page *left, page *right);
 void traversal(page *node);
+void displayNode(page *x, ofstream &myfile);
+fstream& gotoLine(fstream &file, int num);
+void ArvoreB();
