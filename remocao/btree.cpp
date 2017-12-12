@@ -322,12 +322,14 @@ void ajustaNode(page *node, int pos)
 
 void copiaSucessor(page *node, int pos)
 {
-    page *dummy;
-    dummy = node->children[pos];
+    page *temp;
+    temp = node->children[pos];
 
-    for (; dummy->children[0] != NULL;)
-        dummy = dummy->children[0];
-    node->keys[pos] = dummy->keys[1];
+    //
+    if (temp->children[0] != NULL)
+        temp = temp->children[0];
+
+    node->keys[pos] = temp->keys[1];
 }
 
 /* deleta uma chave do nó */
@@ -336,14 +338,15 @@ bool deletaChave(indice key, page *node)
     int pos, flag = 0;
     if (node)
     {
+        /* Se a chave estive na primeira posicao - otimo*/
         if (key.chavePrimaria < node->keys[0].chavePrimaria)
         {
             pos = 0;
             flag = 0;
         }
-        else
+        else //caso contrario acha local
         {
-            for (pos = node->keyCount; key.chavePrimaria < node->keys[pos].chavePrimaria && pos > 0; pos--)
+            /*for (pos = node->keyCount; key.chavePrimaria < node->keys[pos].chavePrimaria && pos > 0; pos--)
             {
                 printf("Remoção ocorreu corretamente \n");
             }
@@ -354,10 +357,14 @@ bool deletaChave(indice key, page *node)
             else
             {
                 flag = 0;
-            }
+            }*/
+            flag = search(node, key, &pos);
         }
+
+        /*  Se a chave foi encontrada*/
         if (flag)
         {
+            /*  Se a chave nao for a unica no nó*/
             if (node->children[pos - 1])
             {
                 copiaSucessor(node, pos);
@@ -367,15 +374,18 @@ bool deletaChave(indice key, page *node)
                     cout << "\nA chave a ser deletada nao pertence a arvore\n";
                 }
             }
-            else
+            else //se for a unica apenas remove
             {
                 removeChave(node, pos);
             }
         }
-        else
+        else //se a chave nao foi encontrada
         {
+            //continua procurando
             flag = deletaChave(key, node->children[pos]);
         }
+
+        /*  se o numero de chaves for menor que o min ajusta*/
         if (node->children[pos])
         {
             if (node->children[pos]->keyCount < MINKEYS)
@@ -398,14 +408,14 @@ bool deletaNoeDaArvore(indice key, page *node)
     }
     else
     {
-        if (node->keyCount == MINKEYS)
+        //se a raiz possui 0 chaves 
+        if (node->keyCount == 0)
         {
             tmp = node;
             node = node->children[0];
             free(tmp);
         }
     };
-    node = node;
     return true;
 }
 /***************************************************************************************/
