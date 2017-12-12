@@ -1,21 +1,18 @@
 #include <iostream>
 #include <fstream>
 #include "commom.h"
+#include "printer.h"
 #include <stack>
 
 using namespace std;
 
 
-void inserirRegistro(page **root, stack<int> &PED)
+void inserirRegistro(page **root, stack<int> &PED, int entrada)
 {
-
-    int entrada;
     registro data;
 
-    cout << "Insira o indice do novo Registro:" << endl;
-    cin >> entrada;
     /*  
-        cin >> data.policyID;
+        data.policyID = entrada;
         cin >> data.statecode;
         cin >> data.county;
         cin >> data.eq_site_limit;
@@ -47,7 +44,11 @@ void inserirRegistro(page **root, stack<int> &PED)
     key.nrr = NRR;
     NRR++;
 
+    /*  Insercao*/
+    cout << endl;
+    cout << "Caminho percorrido:" << endl;
     promoted = insert((*root), key, &promo_nrr, &promo_key, &found);
+    cout << endl;
     if (promoted)
     {
         (*root) = promote(promo_key, (*root), promo_nrr);
@@ -68,13 +69,14 @@ void inserirRegistro(page **root, stack<int> &PED)
             gotoLine(file, PED.top());
             file << entrada;
             cin.get();
+            PED.pop();
         }
-        PED.pop();
         file.close();
 
         /*  mostra arvore nova*/ 
-        cout << "Arvore apos insercao" << endl;
-        traversal((*root));
+        cout << "Arvore apos insercao:" << endl;
+        //traversal((*root));
+        print((*root));
         cout << endl;
 
         /*  Reecreve arvore*/
@@ -88,14 +90,8 @@ void inserirRegistro(page **root, stack<int> &PED)
 }
 
 
-void removerRegistro(page **root, stack<int> &PED)
+bool removerRegistro(page **root, stack<int> &PED, int entrada)
 {
-    int entrada;
-
-    cout << "Insira o indice do Registro para ser removido:" << endl;
-    cin >> entrada;
-
-
     //realizar remoção.
     bool found;
     int nrr;
@@ -125,11 +121,30 @@ void removerRegistro(page **root, stack<int> &PED)
 
         //mostrar arvore
         cout << "Arvore apos remocao" << endl;
-        traversal((*root));
+        //traversal((*root));
+        print((*root));
         cout << endl;
+
+        return true;
     }
     else
     {
         cout << "Esse registro nao existe" << endl;
+        return false;
+    }
+}
+
+
+void atualizarRegistro(page **root, stack<int> &PED)
+{
+    int entrada;
+    bool sucesso;
+
+    cout << "Insira o indice do registro que deseja modificar" << endl;
+    cin >> entrada;
+
+    if ( (removerRegistro(root, PED, entrada)) )
+    {
+        inserirRegistro(root, PED, entrada);
     }
 }

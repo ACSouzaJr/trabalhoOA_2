@@ -8,7 +8,7 @@
 #include <cstring>
 #include <sstream>
 #include <vector>
-
+#include <queue>
 
 using namespace std;
 int NRR = 0;
@@ -26,6 +26,7 @@ page* createPage()
         node->children[i] = NULL;
     }
     node->children[MAXKEYS] = NULL;
+    node->leaf = true;
     node->page = PAGE;
     PAGE++;
 
@@ -72,6 +73,8 @@ page* criaArvore(page *root)
         }
     }
     NRR = i;
+    //retirar depois
+    cout << endl;
 
     return root;
 }
@@ -84,6 +87,7 @@ page* promote(indice promo_key, page *left, page *right) /* key, root, promo_nrr
     node->children[0] = left;
     node->children[1] = right;
     node->keyCount = 1;
+    node->leaf = false;
 
     return node;
 }
@@ -91,6 +95,8 @@ page* promote(indice promo_key, page *left, page *right) /* key, root, promo_nrr
 
 void traversal(page *node)
 {
+    /*  Inorder(left, root, right)*/
+    /*
     int i;
     if (node)
     {
@@ -100,6 +106,24 @@ void traversal(page *node)
             cout << node->keys[i].chavePrimaria << ' ';
         }
         traversal(node->children[i]);
+    }
+    */
+    /*  BFS*/
+    std::queue<page *> queue;
+    queue.push(node);
+    while (!queue.empty())
+    {
+        page *current = queue.front();
+        queue.pop();
+        int i;
+        for (i = 0; i < current->keyCount; i++)
+        {
+            if (current->leaf == false)
+                queue.push(current->children[i]);
+            cout << " " << current->keys[i].chavePrimaria;
+        }
+        if (current->leaf == false)
+            queue.push(current->children[i]);
     }
 }
 
@@ -113,7 +137,7 @@ void displayNode(page *x, ofstream &myfile)
     {
         myfile << left << setw(6) << x->keys[i].chavePrimaria << "|";
     }
-    myfile << internal << setw(7) << "|";
+    myfile << internal << setw(7) << "";
 
     for (int i = 0;x->children[i] != NULL && i <= x->keyCount;i++)
     {

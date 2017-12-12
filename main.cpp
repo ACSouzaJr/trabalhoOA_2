@@ -2,55 +2,66 @@
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
 #include <stack>
 #include "commom.h"
+#include "printer.h"
 
 using namespace std;
 
-void inserirRegistro(page **root, stack<int> &PED);
-void removerRegistro(page **root, stack<int> &PED);
+void inserirRegistro(page **root, stack<int> &PED, int entrada);
+void removerRegistro(page **root, stack<int> &PED, int entrada);
+void atualizarRegistro(page **root, stack<int> &PED);
 
 int main(int argc, char *argv[])
 {
     /*  Cria arvore*/
     page *root = NULL;
-
     root = criaArvore(root);
 
-    traversal(root);
+    /*  Mostra arvore*/
+    //traversal(root);
+    print(root);
     cout << endl;
+
     /*  Escreve no arquivo*/
     ofstream myfile("indicelista.bt", ios::trunc);
     displayNode(root, myfile);
     myfile.close();
 
-    /*  Mostra arvore*/
-    //ArvoreB();
-    //cout << endl;
-
     stack<int> PED;
+    int entrada;
+    
     do
     {
         /*  Menu*/
-        printf("Insira a opção desejada\n");
-        printf("1. Inserir Registro \n");
-        printf("2. Remover Registro \n");
-        printf("3. Atualizar Registro \n");
-        printf("Qualquer outro valor para encerrar\n\n");
+        cout << "Insira a opção desejada" << endl;
+        cout << "1. Inserir Registro " << endl;
+        cout << "2. Remover Registro " << endl;
+        cout << "3. Atualizar Registro " << endl;
+        cout << "Qualquer outro valor para encerrar \n" << endl;
         char opcao;
         cin >> opcao;
 
         switch (opcao)
         {
         case '1':
-            inserirRegistro(&root, PED);
+            cout << "Insira o indice do novo Registro:" << endl;
+            cin >> entrada;
+
+            inserirRegistro(&root, PED, entrada);
             break;
         case '2':
-            removerRegistro(&root, PED);
+            cout << "Insira o indice do Registro para ser removido:" << endl;
+            cin >> entrada;
+
+            removerRegistro(&root, PED, entrada);
             cout << PED.top();
             break;
         case '3':
-            //atualizarRegistro();
+            atualizarRegistro(&root, PED);
             break;                
         default:
             return 0;

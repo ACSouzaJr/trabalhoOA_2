@@ -28,6 +28,7 @@ bool search_2(page *root, indice key, int *nrr)
     return false;
 }
 
+/*  NAO FUNCIONA COM O DATABASE*/
 bool binarySearch(page *node, indice key, int *pos)
 {
 
@@ -68,7 +69,10 @@ bool search(page *root, indice key, int *pos)
     if ( *pos < root->keyCount && key.chavePrimaria == root->keys[*pos].chavePrimaria)
         return true;
     else
+    {
+        cout << root->page << "->";
         return false;        
+    }        
 }
 
 /*  Recebe: pagina, chave a ser adicionada
@@ -91,7 +95,7 @@ bool insert(page *root, indice key, page **promo_nrr, indice *promo_key, bool *f
 
     }
 
-    (*found) = binarySearch(root, key, &pos); /*   Retorna a posicao relativa da chave*/
+    (*found) = search(root, key, &pos); /*   Retorna a posicao relativa da chave*/
     if ( (*found) )
     {
         std::cout << "Essa chave ja existe" << '\n';
@@ -157,7 +161,8 @@ void splitNode(page *oldNode, indice key, page **promo_nrr, indice *promo_key, p
 
     /*  Cria nova pagina para split*/
     page *newNode = createPage();
-
+    newNode->leaf = oldNode->leaf;
+    
     /*  Movimenta chaves, distribuição uniforme */
     for (i = 0; i < MINKEYS; i++)
     {

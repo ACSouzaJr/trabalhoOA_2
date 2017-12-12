@@ -32,6 +32,7 @@ struct BTPAGE
     indice keys[MAXKEYS];   /*  Chaves*/
     struct BTPAGE *children[MAXKEYS+1];    /*  NRR dos filhos*/
 	int page;
+	bool leaf;
 };
 
 typedef struct BTPAGE page;
