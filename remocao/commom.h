@@ -1,4 +1,3 @@
-/*  Vamos fazer o codigo em ingles*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -10,7 +9,7 @@ using namespace std;
 #define MINKEYS MAXKEYS/2
 
 /*	variaveis globais
-*	NRR e o nome do arquivo
+*	NRR e o nome do arquivo e a pagina
 */
 extern int NRR;
 extern const char *FILE_NAME;
@@ -74,7 +73,8 @@ page *promote(indice promo_key, page *left, page *right);
 void traversal(page *node);
 void displayNode(page *x, ofstream &myfile);
 fstream& gotoLine(fstream &file, int num);
-void ArvoreB();
+void getRegistro(registro *data);
+void writeRegistro(fstream &file, registro data);
 
 void removeChave(page *node, int pos);
 void merge(page *node, int pos);

@@ -357,13 +357,13 @@ void ajustaNode(page *node, int pos)
 void copiaSucessor(page *node, int pos)
 {
     page *temp;
-    temp = node->children[pos+1];
+    temp = node->children[pos];
 
     //
     while (!temp-> leaf)
-        temp = temp->children[0];
+        temp = temp->children[temp->keyCount];
 
-    node->keys[pos] = temp->keys[0];
+    node->keys[pos] = temp->keys[temp->keyCount-1];
 }
 
 /* deleta uma chave do nó */
@@ -390,13 +390,13 @@ bool deletaChave(indice key, page *node)
             //if (node->children[pos - 1])
             if (!node->leaf)
             { 
+                 
                 copiaSucessor(node, pos);
-                flag = deletaChave(node->keys[pos], node->children[pos+1]);
+                flag = deletaChave(node->keys[pos], node->children[pos]);
                 if (flag == 0)
                 {
                     cout << "\nA chave a ser deletada nao pertence a arvore\n";
                 }
-            
             }
             else //se for a unica apenas remove
             {

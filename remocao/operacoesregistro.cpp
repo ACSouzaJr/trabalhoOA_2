@@ -6,32 +6,16 @@
 
 using namespace std;
 
-
-void inserirRegistro(page **root, stack<int> &PED, int entrada)
+void inserirRegistro(page **root, stack<int> &PED)
 {
-    //registro data;
+    registro data;
+    int entrada;
 
-    /*  
-        data.policyID = entrada;
-        cin >> data.statecode;
-        cin >> data.county;
-        cin >> data.eq_site_limit;
-        cin >> data.hu_site_limit;
-        cin >> data.fl_site_limit;
-        cin >> data.fr_site_limit;
-        cin >> data.tiv_2011;
-        cin >> data.tiv_2012;
-        cin >> data.eq_site_deductible;
-        cin >> data.hu_site_deductible;
-        cin >> data.fl_site_deductible;
-        cin >> data.fr_site_deductible;
-        cin >> data.point_latitude;
-        cin >> data.point_longitude;
-        cin >> data.line;
-        cin >> data.construction;
-        cin >> data.point_granularity;
+    cout << "Insira o indice do novo Registro: " << endl;
+    cin >> entrada;
 
-    */
+    data.policyID = entrada;
+    //getRegistro(&data);
 
     /*  Inserção arvore*/
     indice key;
@@ -46,7 +30,7 @@ void inserirRegistro(page **root, stack<int> &PED, int entrada)
 
     /*  Insercao*/
     cout << endl;
-    cout << "Caminho percorrido:" << endl;
+    cout << "Caminho percorrido: " << endl;
     promoted = insert((*root), key, &promo_nrr, &promo_key, &found);
     cout << endl;
     if (promoted)
@@ -55,25 +39,28 @@ void inserirRegistro(page **root, stack<int> &PED, int entrada)
     }
 
     /*  Se a chave nao foi encontrada, insere na arvore e no arquivo*/
-    if ( !found )
+    if (!found)
     {
         /*  Insere no arquivo*/
         fstream file(FILE_NAME);
-        if ( PED.empty())
+        if (PED.empty())
         {
             file.seekg(0, file.end);
-            file << "\n" << entrada;
+            file << "\n"
+                 << entrada;
+            //writeRegistro(file, data);
         }
         else
         {
             gotoLine(file, PED.top());
             file << entrada;
+            //writeRegistro(file, data);
             cin.get();
             PED.pop();
         }
         file.close();
 
-        /*  mostra arvore nova*/ 
+        /*  mostra arvore nova*/
         cout << "Arvore apos insercao: " << endl;
         //traversal((*root));
         print((*root));
@@ -84,11 +71,7 @@ void inserirRegistro(page **root, stack<int> &PED, int entrada)
         displayNode((*root), in);
         in.close();
     }
-
-
-
 }
-
 
 bool removerRegistro(page **root, stack<int> &PED, int entrada)
 {
@@ -98,14 +81,14 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
     indice key;
     key.chavePrimaria = entrada;
     found = search_2((*root), key, &nrr);
-    if ( found )
+    if (found)
     {
         //remoçao da arvore
         deletaNoeDaArvore(key, root);
 
         //remoção dos registros
         fstream myfile(FILE_NAME);
-        
+
         //vai ate a linha e insere um simbolo de delecao
         gotoLine(myfile, nrr);
         myfile << '*';
@@ -118,7 +101,7 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
         ofstream in("indicelista.bt", ios::trunc);
         displayNode((*root), in);
         in.close();
-        
+
         //mostrar arvore
         cout << "Arvore apos remocao: " << endl;
         //traversal((*root));
@@ -129,22 +112,43 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
     }
     else
     {
-        cout << "Esse registro nao existe" << endl;
+        cout << "Esse registro nao existe." << endl;
         return false;
     }
 }
 
-
 void atualizarRegistro(page **root, stack<int> &PED)
 {
-    int entrada;
-    //bool sucesso;
+    int entrada, nrr;
+    char opcao;
+    indice key;
+    registro reg;
 
-    cout << "Insira o indice do registro que deseja modificar" << endl;
+    cout << "Insira o indice do registro que deseja modificar." << endl;
     cin >> entrada;
 
-    if ( (removerRegistro(root, PED, entrada)) )
+    /*  Acabei de perceber nao precisa dessa opcao
+    *   O usuario pode mudar qualquer opcao so com o sim.
+    */
+    cout << "Deseja modificar a chave primario(s/n): ";
+    cin >> opcao;
+
+    if (opcao == 's')
     {
-        inserirRegistro(root, PED, entrada);
+        if ((removerRegistro(root, PED, entrada)))
+        {
+            inserirRegistro(root, PED);
+        }
+    }
+    else
+    {
+        reg.policyID = entrada;
+        getRegistro(&reg);
+
+        fstream file(FILE_NAME);
+        key.chavePrimaria = entrada;
+        search_2((*root), key, &nrr);
+        gotoLine(file, nrr);
+        writeRegistro(file, reg);
     }
 }

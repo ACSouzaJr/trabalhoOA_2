@@ -168,6 +168,81 @@ fstream& gotoLine(fstream &file, int num){
 }
 
 
-void ArvoreB(){
+void getRegistro(registro *data){
 
+    cout << "Digite o state code: " << endl;
+    cin >> (*data).statecode;
+
+    cout  << "Digite o pais: " << endl;
+    cin >> (*data).county;
+
+    cout << "Digite o eq_site_limit" << endl;
+    cin >> (*data).eq_site_limit;
+
+    cout << "Digite o hu_site_limit" << endl;
+    cin >> (*data).hu_site_limit;
+
+    cout << "Digite o fl_site_limit" << endl;
+    cin >> (*data).fl_site_limit;
+
+    cout << "Digite o fr_site_limit" << endl;
+    cin >> (*data).fr_site_limit;
+
+    cout << "Digite o tiv_2011" << endl;
+    cin >> (*data).tiv_2011;
+
+    cout << "Digite o tiv_2012" << endl;
+    cin >> (*data).tiv_2012;
+
+    cout << "Digite o eq_site_deduction" << endl;
+    cin >> (*data).eq_site_deductible;
+
+    cout << "Digite o hu_site_deduction" << endl;
+    cin >> (*data).hu_site_deductible;
+
+    cout << "Digite o fl_site_deduction" << endl;
+    cin >> (*data).fl_site_deductible;
+
+    cout << "Digite o fr_site_deduction" << endl;
+    cin >> (*data).fr_site_deductible;
+
+    cout << "Digite o point_latitude" << endl;
+    cin >> (*data).point_latitude;
+
+    cout << "Digite o point_longitude" << endl;
+    cin >> (*data).point_longitude;
+
+    cout << "Digite o line" << endl;    
+    cin >> (*data).line;
+
+    cout << "Digite o construction" << endl;
+    cin >> (*data).construction;
+
+    cout << "Digite o point_granularity" << endl;
+    cin >> (*data).point_granularity;
+
+}
+
+void writeRegistro(fstream &file, registro data){
+
+    file << "\n" << data.policyID << ",";
+    file << data.policyID << ",";
+
+    file << data.statecode << ",";
+    file << data.county << ",";
+    file << data.eq_site_limit << ",";
+    file << data.hu_site_limit << ",";
+    file << data.fl_site_limit << ",";
+    file << data.fr_site_limit << ",";
+    file << data.tiv_2011 << ",";
+    file << data.tiv_2012 << ",";
+    file << data.eq_site_deductible << ",";
+    file << data.hu_site_deductible << ",";
+    file << data.fl_site_deductible << ",";
+    file << data.fr_site_deductible << ",";
+    file << data.point_latitude << ",";
+    file << data.point_longitude << ",";
+    file << data.line << ",";
+    file << data.construction << ",";
+    file << data.point_granularity;
 }
