@@ -393,11 +393,11 @@ void ajustaNode(page *node, int pos)
     {
         if (node->children[1]->keyCount > MINKEYS)
         {
-            moveEsquerda(node, 1);
+            moveEsquerda(node, 0);
         }
         else
         {
-            merge(node, 1);
+            merge(node, 0);
         }
     }
     else
@@ -412,7 +412,7 @@ void ajustaNode(page *node, int pos)
             {
                 if (node->children[pos + 1]->keyCount > MINKEYS)
                 {
-                    moveEsquerda(node, pos + 1);
+                    moveEsquerda(node, pos);
                 }
                 else
                 {
@@ -504,16 +504,15 @@ bool deletaChave(indice key, page *node)
                 ajustaNode(node, pos);
         }
     }
-    printf("%d", flag);
     return flag;
 }
 
 /* deleta nó da B-tree */
-bool deletaNoeDaArvore(indice key, page *node)
+bool deletaNoeDaArvore(indice key, page **node)
 {
     
 
-    if (!deletaChave(key, node))
+    if (!deletaChave(key, (*node)))
     {
         printf("\nA chave a ser deletada nao pertence a arvore\n");
         return false;
@@ -521,17 +520,17 @@ bool deletaNoeDaArvore(indice key, page *node)
     else
     {
         //se a raiz possui 0 chaves 
-        if (node->keyCount == 0)
+        if ((*node)->keyCount == 0)
         {
             page *tmp;
-            tmp = node;
-            if ( node->leaf)
+            tmp = (*node);
+            if ( (*node)->leaf)
             {
-                node = NULL;
+                (*node) = NULL;
             }
             else
             {
-                node = node->children[0];
+                (*node) = (*node)->children[0];
             }
             delete tmp;
         }

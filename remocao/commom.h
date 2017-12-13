@@ -83,4 +83,4 @@ void moveEsquerda(page *node, int pos);
 void ajustaNode(page *node, int pos);
 void copiaSucessor(page *node, int pos);
 bool deletaChave(indice key, page *node);
-bool deletaNoeDaArvore(indice key, page *node);
+bool deletaNoeDaArvore(indice key, page **node);

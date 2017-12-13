@@ -74,7 +74,7 @@ void inserirRegistro(page **root, stack<int> &PED, int entrada)
         file.close();
 
         /*  mostra arvore nova*/ 
-        cout << "Arvore apos insercao:" << endl;
+        cout << "Arvore apos insercao: " << endl;
         //traversal((*root));
         print((*root));
         cout << endl;
@@ -101,8 +101,7 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
     if ( found )
     {
         //remoçao da arvore
-        deletaNoeDaArvore(key, (*root));
-        //removeChave(root, key);
+        deletaNoeDaArvore(key, root);
 
         //remoção dos registros
         fstream myfile(FILE_NAME);
@@ -116,12 +115,12 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
         PED.push(nrr);
 
         //reescrita dos indices
-       /* ofstream in("indicelista.bt", ios::trunc);
+        ofstream in("indicelista.bt", ios::trunc);
         displayNode((*root), in);
         in.close();
-        */
+        
         //mostrar arvore
-        cout << "Arvore apos remocao" << endl;
+        cout << "Arvore apos remocao: " << endl;
         //traversal((*root));
         print((*root));
         cout << endl;
