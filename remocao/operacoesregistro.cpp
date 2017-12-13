@@ -9,7 +9,7 @@ using namespace std;
 
 void inserirRegistro(page **root, stack<int> &PED, int entrada)
 {
-    registro data;
+    //registro data;
 
     /*  
         data.policyID = entrada;
@@ -138,7 +138,7 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
 void atualizarRegistro(page **root, stack<int> &PED)
 {
     int entrada;
-    bool sucesso;
+    //bool sucesso;
 
     cout << "Insira o indice do registro que deseja modificar" << endl;
     cin >> entrada;

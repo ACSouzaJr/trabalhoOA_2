@@ -195,58 +195,31 @@ void removeChave(page *node, int pos)
     for (i = pos + 1; i < node->keyCount; ++i)
     {
         node->keys[i - 1] = node->keys[i];
-        //node->children[i - 1] = node->children[i];
     }
-    //node->children[i - 1] = node->children[i];
 
     node->keyCount--;
 }
 
 /* funde os nós */
 void merge(page *node, int pos)
-{   /*
-    int j = 1;
-    page *filho1 = node->children[pos], *filho2 = node->children[pos - 1];
-
-    filho2->keyCount++;
-    filho2->keys[filho2->keyCount] = node->keys[pos];
-    filho2->children[filho2->keyCount] = node->children[0];
-
-    while (j <= filho1->keyCount)
-    {
-        filho2->keyCount++;
-        filho2->keys[filho2->keyCount] = filho1->keys[j];
-        filho2->children[filho2->keyCount] = filho1->children[j];
-        j++;
-    }
-
-    j = pos;
-    while (j < node->keyCount)
-    {
-        node->keys[j] = node->keys[j + 1];
-        node->children[j] = node->children[j + 1];
-        j++;
-    }
-    node->keyCount--;
-    free(filho1);
-    */
+{   
 
     page *child = node->children[pos];
-    page *sibling = node->children[pos + 1];
+    page *irmao = node->children[pos + 1];
 
     // Pulling a key from the current node and inserting it into (t-1)th
     // position of C[idx]
     child->keys[MINKEYS - 1] = node->keys[pos];
 
     // Copying the keys from C[idx+1] to C[idx] at the end
-    for (int i = 0; i < sibling->keyCount; ++i)
-        child->keys[i + MINKEYS] = sibling->keys[i];
+    for (int i = 0; i < irmao->keyCount; ++i)
+        child->keys[i + MINKEYS] = irmao->keys[i];
 
     // Copying the child pointers from C[idx+1] to C[idx]
     if (!child->leaf)
     {
-        for (int i = 0; i <= sibling->keyCount; ++i)
-            child->children[i + MINKEYS] = sibling->children[i];
+        for (int i = 0; i <= irmao->keyCount; ++i)
+            child->children[i + MINKEYS] = irmao->children[i];
     }
 
     // Moving all keys after idx in the current node one step before -
@@ -260,11 +233,11 @@ void merge(page *node, int pos)
         node->children[i - 1] = node->children[i];
 
     // Updating the key count of child and the current node
-    child->keyCount += sibling->keyCount + 1;
+    child->keyCount += irmao->keyCount + 1;
     node->keyCount--;
 
-    // Freeing the memory occupied by sibling
-    delete sibling;
+    // Freeing the memory occupied by irmao
+    delete irmao;
 
     return;
 }
@@ -272,57 +245,37 @@ void merge(page *node, int pos)
 /* move a chave do pai para o filho da direita */
 void moveDireita(page *node, int pos)
 {
-    /*
-    page *x = node->children[pos];
-    int j = x->keyCount;
 
-    while (j > 0)
-    {
-        x->keys[j + 1] = x->keys[j];
-        x->children[j + 1] = x->children[j];
-    }
-    x->keys[1] = node->keys[pos];
-    x->children[1] = x->children[0];
-    x->keyCount++;
-
-    x = node->children[pos - 1];
-    node->keys[pos] = x->keys[x->keyCount];
-    node->children[pos] = x->children[x->keyCount];
-    x->keyCount--;
-    return;
-    */
-
-    page *child = node->children[pos];
-    page *sibling = node->children[pos - 1];
+    page *filho = node->children[pos];
+    page *irmao = node->children[pos - 1];
 
     // The last key from children[idx-1] goes up to the parent and key[idx-1]
     // from parent is inserted as the first key in children[idx]. Thus, the  loses
-    // sibling one key and child gains one key
+    // irmao one key and child gains one key
 
-    // Moving all key in children[idx] one step ahead
-    for (int i = child->keyCount - 1; i >= 0; --i)
-        child->keys[i + 1] = child->keys[i];
+    // Move todas as chaves do filho para frente
+    for (int i = filho->keyCount - 1; i >= 0; --i)
+        filho->keys[i + 1] = filho->keys[i];
 
-    // If children[idx] is not a leaf, move all its child pointers one step ahead
-    if (!child->leaf)
+    // Se for uma folha, os ponteiros dos filhos são movidos para frente
+    if (!filho->leaf)
     {
-        for (int i = child->keyCount; i >= 0; --i)
-            child->children[i + 1] = child->children[i];
+        for (int i = filho->keyCount; i >= 0; --i)
+            filho->children[i + 1] = filho->children[i];
     }
 
     // Setting child's first key equal to keys[idx-1] from the current node
-    child->keys[0] = node->keys[pos - 1];
+    filho->keys[0] = node->keys[pos - 1];
 
-    // Moving sibling's last child as children[idx]'s first child
+    // Move o último filho do irmão e o primeiro de todos os filhos
     if (!node->leaf)
-        child->children[0] = sibling->children[sibling->keyCount];
+        filho->children[0] = irmao->children[irmao->keyCount];
 
-    // Moving the key from the sibling to the parent
-    // This reduces the number of keys in the sibling
-    node->keys[pos - 1] = sibling->keys[sibling->keyCount - 1];
+    // Move a chave do irmao para seu pai, reduzindo o número de chaves no irmão
+    node->keys[pos - 1] = irmao->keys[irmao->keyCount - 1];
 
-    child->keyCount++;
-    sibling->keyCount--;
+    filho->keyCount++;
+    irmao->keyCount--;
 
     return;
 }
@@ -330,58 +283,35 @@ void moveDireita(page *node, int pos)
 /* move a chave do pai para o filho da esquerda */
 void moveEsquerda(page *node, int pos)
 {
-    /*
-    int j = 1;
-    page *x = node->children[pos - 1];
 
-    x->keyCount++;
-    x->keys[x->keyCount] = node->keys[pos];
-    x->children[x->keyCount] = node->children[pos]->children[0];
+    page *filho = node->children[pos];
+    page *irmao = node->children[pos + 1];
 
-    //sobe chave da direita para um nivel acima
-    x = node->children[pos];
-    node->keys[pos] = x->keys[1];
-    x->children[0] = x->children[1];
-    x->keyCount--;
+    // a chave é inserida como ultima em keys
+    filho->keys[(filho->keyCount)] = node->keys[pos];
 
-    while (j <= x->keyCount)
+    // o primeiro filho do irmao é inserido como último filho em children
+    if (!(filho->leaf))
+        filho->children[(filho->keyCount) + 1] = irmao->children[0];
+
+    //a primeira chave do irmao é inserida em keys
+    node->keys[pos] = irmao->keys[0];
+
+    // Move todas as chaves no irmao para tras
+    for (int i = 1; i < irmao->keyCount; ++i)
+        irmao->keys[i - 1] = irmao->keys[i];
+
+    // Move todos os ponteiros do irmao para tras
+    if (!irmao->leaf)
     {
-        x->keys[j] = x->keys[j + 1];
-        x->children[j] = x->children[j + 1];
-        j++;
-    }
-    return;
-    */
-
-    page *child = node->children[pos];
-    page *sibling = node->children[pos + 1];
-
-    // keys[idx] is inserted as the last key in node->children[idx]
-    child->keys[(child->keyCount)] = node->keys[pos];
-
-    // Sibling's first child is inserted as the last child
-    // into node->children[idx]
-    if (!(child->leaf))
-        child->children[(child->keyCount) + 1] = sibling->children[0];
-
-    //The first key from sibling is inserted into keys[idx]
-    node->keys[pos] = sibling->keys[0];
-
-    // Moving all keys in sibling one step behind
-    for (int i = 1; i < sibling->keyCount; ++i)
-        sibling->keys[i - 1] = sibling->keys[i];
-
-    // Moving the child pointers one step behind
-    if (!sibling->leaf)
-    {
-        for (int i = 1; i <= sibling->keyCount; ++i)
-            sibling->children[i - 1] = sibling->children[i];
+        for (int i = 1; i <= irmao->keyCount; ++i)
+            irmao->children[i - 1] = irmao->children[i];
     }
 
-    // Increasing and decreasing the key count of C[idx] and C[idx+1]
-    // respectively
-    child->keyCount++;
-    sibling->keyCount--;
+    // O número de chaves do filho aumenta e consequentemente do irmao diminui
+    // em razão da movimentação
+    filho->keyCount++;
+    irmao->keyCount--;
 
     return;
 }
@@ -456,18 +386,6 @@ bool deletaChave(indice key, page *node)
         }
         else //caso contrario acha local
         {
-            /*for (pos = node->keyCount; key.chavePrimaria < node->keys[pos].chavePrimaria && pos > 0; pos--)
-            {
-                printf("Remoção ocorreu corretamente \n");
-            }
-            if (key.chavePrimaria == node->keys[pos].chavePrimaria)
-            {
-                flag = 1;
-            }
-            else
-            {
-                flag = 0;
-            }*/
             flag = search(node, key, &pos);
         }
 
@@ -537,87 +455,3 @@ bool deletaNoeDaArvore(indice key, page **node)
     };
     return true;
 }
-/***************************************************************************************/
-
-/*void removePage(page *node, indice key, page *r_child)
-{
-    int i;
-    for (i = node->keyCount; key.chavePrimaria < node->keys[i - 1].chavePrimaria && i > 0; i--)
-    {
-        node->keys[i] = node->keys[i-1];
-        node->children[i+1] = node->children[i];
-    }
-    node->keyCount--;
-}
-
-void mergeNode(page *node1, page *node2, indice key, page **promo_nrr, indice *promo_key, page *r_child)
-{
-
-    indice tempKeys[MAXKEYS + 1];
-    page *tempCh[MAXKEYS+2];
-    int i;
-
-    //  Move todas as chaves e filhos para um temporario
-    for (i = 0; i < MAXKEYS; i++)
-    {
-        tempKeys[i] = node1->keys[i];
-        tempCh[i] = node1->children[i];
-    }
-    tempCh[i] = node1->children[i];
-
-    //  Encontra lugar para chave que vai ser inserida
-    for (i = MAXKEYS; key.chavePrimaria < tempKeys[i - 1].chavePrimaria && i > 0; i--)
-    {
-        tempKeys[i] = tempKeys[i - 1];
-        tempCh[i + 1] = tempCh[i];
-    }
-    tempKeys[i] = key;
-    tempCh[i + 1] = r_child;
-
-    //  Movimenta chaves, distribuição uniforme 
-    for (i = 0; i < MINKEYS; i++)
-    {
-        node1->keys[i] = tempKeys[i];
-        node1->children[i] = tempCh[i];
-    }
-    node1->children[MINKEYS] = tempCh[MINKEYS];
-
-    node1->keyCount = node1->keyCount + node2->keyCount;
-
-    *promo_key = tempKeys[MINKEYS]; //-> promoção chave do meio
-    *promo_nrr = *root; // a nrr do novo elemento é o pai dos nós que foram concatenados
-}
-
-bool delete(page *root, indice key, page **promo_nrr, indice *promo_key, bool *found)
-{
-
-    int pos;
-    bool promoted;
-    page *p_b_rrn;
-    indice p_b_key;
-
-
-    (*found) = search(root, key, &pos); //   Retorna a posicao relativa da chave
-    if ((*found))
-    {
-        std::cout << "Essa chave ja existe" << '\n';
-        return false;
-    }
-
-    promoted = insert(root->children[pos], key, &p_b_rrn, &p_b_key, found);
-    if (!promoted)
-    {
-        return false;
-    }
-    if (root->keyCount < MAXKEYS) //  Pagina nao esta cheia
-    {
-        insertPage(root, p_b_key, p_b_rrn);
-        return false;
-    }
-    else
-    {
-        splitNode(root, p_b_key, promo_nrr, promo_key, p_b_rrn);
-        return true;
-    }
-}
-*/
