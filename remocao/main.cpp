@@ -37,11 +37,11 @@ int main(int argc, char *argv[])
     do
     {
         /*  Menu*/
-        cout << "Insira a opção desejada" << endl;
-        cout << "1. Inserir Registro " << endl;
-        cout << "2. Remover Registro " << endl;
-        cout << "3. Atualizar Registro " << endl;
-        cout << "Qualquer outro valor para encerrar \n" << endl;
+        cout << "| Insira a operacao a ser realizada:\n" << endl;
+        cout << "| 1. Inserir Registro" << endl;
+        cout << "| 2. Remover Registro" << endl;
+        cout << "| 3. Atualizar Registro" << endl;
+        cout << "| Qualquer outro valor para encerrar:\n" << endl;
         char opcao;
         cin >> opcao;
 
