@@ -116,10 +116,10 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
         PED.push(nrr);
 
         //reescrita dos indices
-        ofstream in("indicelista.bt", ios::trunc);
+       /* ofstream in("indicelista.bt", ios::trunc);
         displayNode((*root), in);
         in.close();
-
+        */
         //mostrar arvore
         cout << "Arvore apos remocao" << endl;
         //traversal((*root));

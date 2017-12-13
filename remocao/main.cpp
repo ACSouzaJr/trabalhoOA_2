@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
             cin >> entrada;
 
             removerRegistro(&root, PED, entrada);
-            cout << PED.top();
+            //cout << PED.top(); //debug
             break;
         case '3':
             atualizarRegistro(&root, PED);
