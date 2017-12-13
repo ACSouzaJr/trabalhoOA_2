@@ -186,7 +186,7 @@ void splitNode(page *oldNode, indice key, page **promo_nrr, indice *promo_key, p
     *promo_nrr = newNode;
 }
 
-/**************************************************************************************/
+/************************************REMOÇÃO*****************************************/
 
 // diminui o número de chaves na página
 void removeChave(page *node, int pos)
@@ -200,43 +200,40 @@ void removeChave(page *node, int pos)
     node->keyCount--;
 }
 
-/* funde os nós */
+/* funde os nós irmãos */
 void merge(page *node, int pos)
 {   
 
     page *child = node->children[pos];
     page *irmao = node->children[pos + 1];
 
-    // Pulling a key from the current node and inserting it into (t-1)th
-    // position of C[idx]
+    // pega uma chave do nó atual e insere na posição do valor mínimo de chaves -1
     child->keys[MINKEYS - 1] = node->keys[pos];
 
-    // Copying the keys from C[idx+1] to C[idx] at the end
+    // copia as chaves do filho pro irmão
     for (int i = 0; i < irmao->keyCount; ++i)
         child->keys[i + MINKEYS] = irmao->keys[i];
 
-    // Copying the child pointers from C[idx+1] to C[idx]
+    // copia os ponteiros do filho pro irmão
     if (!child->leaf)
     {
         for (int i = 0; i <= irmao->keyCount; ++i)
             child->children[i + MINKEYS] = irmao->children[i];
     }
 
-    // Moving all keys after idx in the current node one step before -
-    // to fill the gap created by moving keys[idx] to C[idx]
+    // preenche os gaps movendo as chaves para tras
     for (int i = pos + 1; i < node->keyCount; ++i)
         node->keys[i - 1] = node->keys[i];
 
-    // Moving the child pointers after (idx+1) in the current node one
-    // step before
+    // move os ponteiros dos filhos para tras
     for (int i = pos + 2; i <= node->keyCount; ++i)
         node->children[i - 1] = node->children[i];
 
-    // Updating the key count of child and the current node
+    // atualiza o número de chaves do filho e de seus irmão
     child->keyCount += irmao->keyCount + 1;
     node->keyCount--;
 
-    // Freeing the memory occupied by irmao
+    // libera a memória ocupada pelo irmão
     delete irmao;
 
     return;
@@ -249,9 +246,6 @@ void moveDireita(page *node, int pos)
     page *filho = node->children[pos];
     page *irmao = node->children[pos - 1];
 
-    // The last key from children[idx-1] goes up to the parent and key[idx-1]
-    // from parent is inserted as the first key in children[idx]. Thus, the  loses
-    // irmao one key and child gains one key
 
     // Move todas as chaves do filho para frente
     for (int i = filho->keyCount - 1; i >= 0; --i)
