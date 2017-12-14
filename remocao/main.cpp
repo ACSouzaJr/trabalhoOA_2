@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
         cout << "| 1. Inserir Registro " << endl;
         cout << "| 2. Remover Registro " << endl;
         cout << "| 3. Atualizar Registro " << endl;
+        cout << "| 4. Mostrar Arvore " << endl;
         cout << "| Qualquer outro valor para encerrar \n" << endl;
         char opcao;
         cin >> opcao;
@@ -59,7 +60,10 @@ int main(int argc, char *argv[])
             break;
         case '3':
             atualizarRegistro(&root, PED);
-            break;                
+            break;             
+        case '4':
+            print(root);
+            break;               
         default:
             return 0;
             break;
