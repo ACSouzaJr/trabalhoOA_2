@@ -23,12 +23,13 @@ int main(int argc, char *argv[])
 
     /*  Mostra arvore*/
     //traversal(root);
-    print(root);
+    //print(root);
+    printIndice(root);
     cout << endl;
 
     /*  Escreve no arquivo*/
     ofstream myfile("indicelista.bt", ios::trunc);
-    displayNode(root, myfile);
+    atualizaIndice(root, myfile);
     myfile.close();
 
     stack<int> PED;
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
     do
     {
         /*  Menu*/
-        cout << "| Insira a opção desejada" << endl;
+        cout << "| Insira a opção desejada: " << endl;
         cout << "| 1. Inserir Registro " << endl;
         cout << "| 2. Remover Registro " << endl;
         cout << "| 3. Atualizar Registro " << endl;
@@ -51,11 +52,10 @@ int main(int argc, char *argv[])
             inserirRegistro(&root, PED);
             break;
         case '2':
-            cout << "Insira o indice do Registro para ser removido:" << endl;
+            cout << "Insira o policyID do Registro para ser removido:" << endl;
             cin >> entrada;
 
             removerRegistro(&root, PED, entrada);
-            //cout << PED.top(); //debug
             break;
         case '3':
             atualizarRegistro(&root, PED);

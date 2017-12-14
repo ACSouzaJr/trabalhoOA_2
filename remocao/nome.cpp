@@ -12,7 +12,7 @@
 
 using namespace std;
 int NRR = 0;
-const char  *FILE_NAME  = "teste3.txt";
+const char *FILE_NAME = "FL_insurance_sample.csv";
 int PAGE = 0;
 
 page* createPage()
@@ -37,7 +37,7 @@ page* criaArvore(page *root)
 {
     string line;
     indice key;
-    int i = 0;
+    int i = 1;
 
     ifstream myfile(FILE_NAME);
     //getline(myfile, line); /*   retira o cabeçalho*/
@@ -49,9 +49,13 @@ page* criaArvore(page *root)
     /*  Preenche arvore*/
     while (getline(myfile, line))
     {
+        if (myfile.eof()) 
+            break;
+
         if ( line[0] != '*')
         {
-            line = line.substr(0, 6);
+            getline(myfile, line, ',');
+            //line = line.substr(0, 6);
             key.chavePrimaria = atoi(line.c_str());
             key.nrr = i;
             //se estiver vazia cria raiz
@@ -126,11 +130,9 @@ void traversal(page *node)
     }
 }
 
-void displayNode(page *x, ofstream &myfile)
+void atualizaIndice(page *x, ofstream &myfile)
 {
-    //ofstream myfile("indicelista.bt", ios::app);
-
-    myfile << x->page << "   |";
+    myfile << left << setw(7) << x->page << "|";
 
     for (int i = 0;x->keys[i].chavePrimaria != NULL && i < x->keyCount;i++)
     {
@@ -145,7 +147,28 @@ void displayNode(page *x, ofstream &myfile)
     myfile << endl;
     for (int i = 0; x->children[i] != NULL && i <= x->keyCount; i++)
     {
-        displayNode(x->children[i], myfile);
+        atualizaIndice(x->children[i], myfile);
+    }
+}
+
+void printIndice(page *x)
+{
+    cout << left << setw(7) << x->page << "|";
+
+    for (int i = 0; x->keys[i].chavePrimaria != NULL && i < x->keyCount; i++)
+    {
+        cout << left << setw(6) << x->keys[i].chavePrimaria << "|";
+    }
+    cout << internal << setw(7) << "";
+
+    for (int i = 0; x->children[i] != NULL && i <= x->keyCount; i++)
+    {
+        cout << x->children[i]->page << "|";
+    }
+    cout << endl;
+    for (int i = 0; x->children[i] != NULL && i <= x->keyCount; i++)
+    {
+        printIndice(x->children[i]);
     }
 }
 
@@ -172,7 +195,7 @@ void getRegistro(registro *data){
     cout << "Digite o state code: " << endl;
     cin >> (*data).statecode;
 
-    cout  << "Digite o pais: " << endl;
+    cout  << "Digite o country: " << endl;
     cin >> (*data).county;
 
     cout << "Digite o eq_site_limit" << endl;
@@ -224,7 +247,6 @@ void getRegistro(registro *data){
 
 void writeRegistro(fstream &file, registro data){
 
-    file << "\n" << data.policyID << ",";
     file << data.policyID << ",";
 
     file << data.statecode << ",";

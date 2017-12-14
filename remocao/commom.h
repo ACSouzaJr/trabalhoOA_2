@@ -5,7 +5,7 @@
 using namespace std;
 
 /* Numero maximo de keys*/
-#define MAXKEYS 4
+#define MAXKEYS 6
 #define MINKEYS MAXKEYS/2
 
 /*	variaveis globais
@@ -38,7 +38,7 @@ typedef struct BTPAGE page;
 
 struct regist
 {
-    string policyID;
+    int policyID;
     string statecode;
 	string county;
 	string eq_site_limit;
@@ -71,7 +71,8 @@ page *createPage();
 page *criaArvore(page *root);
 page *promote(indice promo_key, page *left, page *right);
 void traversal(page *node);
-void displayNode(page *x, ofstream &myfile);
+void atualizaIndice(page *x, ofstream &myfile);
+void printIndice(page *x);
 fstream& gotoLine(fstream &file, int num);
 void getRegistro(registro *data);
 void writeRegistro(fstream &file, registro data);

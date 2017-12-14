@@ -11,11 +11,11 @@ void inserirRegistro(page **root, stack<int> &PED)
     registro data;
     int entrada;
 
-    cout << "Insira o indice do novo Registro: " << endl;
+    cout << "Insira o novo policyID: " << endl;
     cin >> entrada;
 
     data.policyID = entrada;
-    //getRegistro(&data);
+    getRegistro(&data);
 
     /*  Inserção arvore*/
     indice key;
@@ -51,15 +51,14 @@ void inserirRegistro(page **root, stack<int> &PED)
         if (PED.empty())
         {
             file.seekg(0, file.end);
-            file << "\n"
-                 << entrada;
-            //writeRegistro(file, data);
+            file << "\n";
+            writeRegistro(file, data);
         }
         else
         {
             gotoLine(file, PED.top());
-            file << entrada;
-            //writeRegistro(file, data);
+            //file << entrada;
+            writeRegistro(file, data);
             cin.get();
             PED.pop();
         }
@@ -68,12 +67,13 @@ void inserirRegistro(page **root, stack<int> &PED)
         /*  mostra arvore nova*/
         cout << "Arvore apos insercao: " << endl;
         //traversal((*root));
-        print((*root));
+        //print((*root));
+        printIndice((*root));
         cout << endl;
 
         /*  Reecreve arvore*/
         ofstream in("indicelista.bt", ios::trunc);
-        displayNode((*root), in);
+        atualizaIndice((*root), in);
         in.close();
     }
 }
@@ -108,14 +108,15 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
 
         //reescrita dos indices
         ofstream in("indicelista.bt", ios::trunc);
-        displayNode((*root), in);
+        atualizaIndice((*root), in);
         in.close();
 
         //mostrar arvore
         cout << endl;
         cout << "Arvore apos remocao: " << endl;
         //traversal((*root));
-        print((*root));
+        //print((*root));
+        printIndice((*root));
         cout << endl;
 
         return true;
@@ -134,10 +135,10 @@ void atualizarRegistro(page **root, stack<int> &PED)
     indice key;
     registro reg;
 
-    cout << "Insira o indice do registro que deseja modificar." << endl;
+    cout << "Insira o policyID do registro que deseja modificar." << endl;
     cin >> entrada;
 
-    cout << "Deseja modificar a chave primario(s/n): ";
+    cout << "Deseja modificar o policyID? (s/n): ";
     cin >> opcao;
 
     if (opcao == 's')
@@ -149,13 +150,26 @@ void atualizarRegistro(page **root, stack<int> &PED)
     }
     else
     {
+        cout << endl;
+
         reg.policyID = entrada;
         getRegistro(&reg);
 
+        /*  Encontra posicao do registro no arquivo e substitui linha*/
         fstream file(FILE_NAME);
         key.chavePrimaria = entrada;
+        /*  Mostra caminho*/
+        cout << endl;
+        cout << "Caminho percorrido: " << endl;
         search_2((*root), key, &nrr);
         gotoLine(file, nrr);
         writeRegistro(file, reg);
+
+        /*  Mostra arvore*/
+        cout << "\nArvore apos modificacao: " << endl;
+        //traversal((*root));
+        //print((*root));
+        printIndice((*root));
+        cout << endl;
     }
 }

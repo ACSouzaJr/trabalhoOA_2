@@ -4,7 +4,7 @@ CFLAGS=-I $(IDIR)
 
 ODIR=obj
 
-CXXFLAGS += -g -Wall -Wextra -pthread -Weffc++ -std=c++11
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 
 MAIN = run
 
