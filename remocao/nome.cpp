@@ -73,7 +73,6 @@ page* criaArvore(page *root)
         }
     }
     NRR = i;
-    //retirar depois
     cout << endl;
 
     return root;

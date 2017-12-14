@@ -28,9 +28,13 @@ void inserirRegistro(page **root, stack<int> &PED)
     key.nrr = NRR;
     NRR++;
 
-    /*  Insercao*/
+    /*  Mostra caminho*/
+    int nrr;
     cout << endl;
     cout << "Caminho percorrido: " << endl;
+    search_2((*root), key, &nrr);
+
+    /*  Insercao*/
     promoted = insert((*root), key, &promo_nrr, &promo_key, &found);
     cout << endl;
     if (promoted)
@@ -41,6 +45,7 @@ void inserirRegistro(page **root, stack<int> &PED)
     /*  Se a chave nao foi encontrada, insere na arvore e no arquivo*/
     if (!found)
     {
+
         /*  Insere no arquivo*/
         fstream file(FILE_NAME);
         if (PED.empty())
@@ -80,7 +85,11 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
     int nrr;
     indice key;
     key.chavePrimaria = entrada;
+
+    cout << endl;
+    cout << "Caminho percorrido: " << endl;
     found = search_2((*root), key, &nrr);
+    
     if (found)
     {
         //remoçao da arvore
@@ -103,6 +112,7 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
         in.close();
 
         //mostrar arvore
+        cout << endl;
         cout << "Arvore apos remocao: " << endl;
         //traversal((*root));
         print((*root));
@@ -112,7 +122,7 @@ bool removerRegistro(page **root, stack<int> &PED, int entrada)
     }
     else
     {
-        cout << "Esse registro nao existe." << endl;
+        cout << "Esse registro nao existe. \n" << endl;
         return false;
     }
 }
@@ -127,9 +137,6 @@ void atualizarRegistro(page **root, stack<int> &PED)
     cout << "Insira o indice do registro que deseja modificar." << endl;
     cin >> entrada;
 
-    /*  Acabei de perceber nao precisa dessa opcao
-    *   O usuario pode mudar qualquer opcao so com o sim.
-    */
     cout << "Deseja modificar a chave primario(s/n): ";
     cin >> opcao;
 

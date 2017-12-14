@@ -43,6 +43,7 @@ bool binarySearch(page *node, indice key, int *pos)
         {
             /*  Encontrou retorna a chave*/
             *pos = meio;
+            cout << node->page;
             return true;
         }
         else if( node->keys[meio].chavePrimaria > key.chavePrimaria )
@@ -56,6 +57,7 @@ bool binarySearch(page *node, indice key, int *pos)
     }   
     /*  Nao encontrou retorna posicao para o filho*/
     *pos = inicio;
+    cout << node->page << "->";
     return false;
 }
 
@@ -70,7 +72,7 @@ bool search(page *root, indice key, int *pos)
         return true;
     else
     {
-        cout << root->page << "->";
+        //cout << root->page << "->";
         return false;        
     }        
 }
@@ -208,17 +210,17 @@ void merge(page *node, int pos)
     page *irmao = node->children[pos + 1];
 
     // pega uma chave do nó atual e insere na posição do valor mínimo de chaves -1
-    child->keys[MINKEYS - 1] = node->keys[pos];
+    child->keys[child->keyCount] = node->keys[pos];
 
     // copia as chaves do filho pro irmão
     for (int i = 0; i < irmao->keyCount; ++i)
-        child->keys[i + MINKEYS] = irmao->keys[i];
+        child->keys[i + child->keyCount + 1] = irmao->keys[i];
 
     // copia os ponteiros do filho pro irmão
     if (!child->leaf)
     {
         for (int i = 0; i <= irmao->keyCount; ++i)
-            child->children[i + MINKEYS] = irmao->children[i];
+            child->children[i + child->keyCount + 1] = irmao->children[i];
     }
 
     // preenche os gaps movendo as chaves para tras
@@ -347,9 +349,9 @@ void ajustaNode(page *node, int pos)
         else
         {
             if (node->children[pos - 1]->keyCount > MINKEYS)
-                moveDireita(node, pos);
+                moveDireita(node, pos - 1);
             else
-                merge(node, pos);
+                merge(node, pos - 1);
         }
     }
 }
@@ -387,7 +389,6 @@ bool deletaChave(indice key, page *node)
         if (flag)
         {
             /*  Se a nó for folha*/
-            //if (node->children[pos - 1])
             if (!node->leaf)
             { 
                  
@@ -431,7 +432,7 @@ bool deletaNoeDaArvore(indice key, page **node)
     }
     else
     {
-        //se a raiz possui 0 chaves 
+        //se a raiz possui 0 chaves troca raiz de posicao
         if ((*node)->keyCount == 0)
         {
             page *tmp;

@@ -60,7 +60,7 @@ struct regist
 
 typedef struct regist registro;
 
-    /*  Funcoes*/
+/*  Funcoes*/
 bool search(page *root, indice key, int *pos);
 bool search_2(page *root, indice key, int *nrr);
 bool binarySearch(page *node, indice key, int *pos);
@@ -76,6 +76,7 @@ fstream& gotoLine(fstream &file, int num);
 void getRegistro(registro *data);
 void writeRegistro(fstream &file, registro data);
 
+/*	Remocao arvore*/
 void removeChave(page *node, int pos);
 void merge(page *node, int pos);
 void moveDireita(page *node, int pos);
